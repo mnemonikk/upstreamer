@@ -10,13 +10,7 @@ class UploadMiddleware
       @length = env["CONTENT_LENGTH"]
       @length = @length.to_i if @length
 
-      upload_id = env["QUERY_STRING"]
-      $pipe_mutex.synchronize do
-        _, @pipe = $pipe[upload_id]
-        unless @pipe
-          _, @pipe = $pipe[upload_id] = IO.pipe
-        end
-      end
+      _, @pipe = pipes_for(env["QUERY_STRING"])
       @input, env["rack.input"] = env["rack.input"], self
     end
     @app.call(env)
