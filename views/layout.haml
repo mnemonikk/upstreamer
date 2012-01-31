@@ -6,4 +6,4 @@
     %script(type="text/javascript" src="js/upload.js")
     %link(rel="stylesheet" href="http://twitter.github.com/bootstrap/1.4.0/bootstrap.min.css")
     %link(rel="stylesheet" href="css/progress.css")
-  %body= haml view
+  %body= block_given? && yield || "<!-- CONTENT -->"
