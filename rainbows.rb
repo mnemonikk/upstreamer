@@ -1,7 +1,7 @@
 # -*- mode: ruby -*-
 
 Rainbows! do
-  use :ThreadSpawn # concurrency model to use
+  use :ThreadPool # concurrency model to use
   worker_connections 400
   keepalive_timeout 0 # zero disables keepalives entirely
   client_max_body_size 5*1024*1024 # 5 megabytes

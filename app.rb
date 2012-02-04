@@ -1,54 +1,31 @@
-require 'sinatra'
-require 'haml'
-require 'json'
+require "sinatra"
+require "haml"
+require "json"
 
-
-$pipe = {}
-$pipe_mutex = Mutex.new
-def pipes_for(upload_id)
-  $pipe_mutex.synchronize do
-    $pipe[upload_id] ||= IO.pipe
-  end
-end
-
-def generate_upload_id
-  "%0#{128/4}x" % Kernel.rand(2**128 - 1)
-end
-
-
-require './upload_middleware'
+require "./lib/upload"
+require "./lib/upload_middleware"
 use UploadMiddleware
 
 
 get "/" do
-  haml :index, {}, {:upload_id => generate_upload_id}
+  haml :index, {}, {:upload_id => Upload.generate_id}
 end
 
 post "/upload" do
-  original_filename = params['fileInput'][:filename]
-  filename =
-    request.query_string.gsub(/[^0-9a-f]/, "") +
-    File.extname(original_filename)
-  url = File.join("/upload", filename)
+  upload = Upload.new(request.query_string, params["fileInput"])
+  upload.save!
 
-  File.open(File.join("public", url), "w") do |f|
-    f.write(params['fileInput'][:tempfile].read)
-  end
-
-  haml :upload, {},
-    {:filename => original_filename,
-     :url      => url}
+  haml :upload, {}, {:upload => upload}
 end
 
-get '/progress' do
+get "/progress" do
   stream do |out|
-    content_marker = "<!-- CONTENT -->"
-    header, footer = haml(:layout, {:layout => false}).split(content_marker)
+    header, footer = haml(:empty).split("<!-- CONTENT -->")
     upload_id = request.query_string
 
     out << header
 
-    pipe, _ = pipes_for(upload_id)
+    pipe = UploadMiddleware.pipe_reader_for(upload_id)
 
     while !pipe.eof?
       pos, length = JSON.parse(pipe.gets)
