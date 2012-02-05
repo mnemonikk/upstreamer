@@ -1,0 +1,16 @@
+.container
+  .row
+    .page-header
+      %h1 
+        Thanks!
+        %small We've received your upload
+  .row      
+    %p
+      Your file
+      %strong&= original_filename
+      is available
+      %a(href=url) here.
+    %p
+      You added the following description:
+    %blockquote&= description
+

@@ -4,34 +4,30 @@
 .container
   .row
     .page-header
-      %h1 
-        File Uploader
-        %small There's some progress
+      %h1 Upstreamer
   .row  
-    %form(action="/upload?#{upload_id}" target="upload" method="post" enctype="multipart/form-data")
-      %fieldset
-        %legend Please choose a file to upload
-        .clearfix
-          %label(for="fileInput") File Input
-          .input
-            %input.input-file#fileInput(type="file" name="fileInput")
-            .progress-bar.blue(style="display: none;")
-              %span(style="width: 0")
-            #success(style="display: none;")              
-        %noscript            
-          .actions
-            %input.btn.primary(type="submit" value="Save")            
+    .well.form-horizontal
+      %form(action="/upload?#{upload_id}" target="upload" method="post" enctype="multipart/form-data")
+        .control-group
+          %label.control-label(for="file") File for upload
+          .controls
+            %input#file(type="file" name="file")
+            .progress-bar.blue.stripes.animated(style="display: none;")
+              %span(style="width: 0;")
+            %span.help-inline#success(style="display: none;")              
 
-    %iframe(name="upload"   width="0" height="0" frameborder="0")
-    %iframe(name="progress" width="0" height="0" frameborder="0")
+      %form(action="/submit" method="post" id="description_form")
+        %fieldset
+          .control-group
+            %label.control-label(for="description") Description
+            .controls  
+              %input(type="hidden" name="upload_id" value=upload_id)
+              %input(type="hidden" name="url" value="")
+              %input(type="hidden" name="original_filename" value="")
+              %textarea.input-xxlarge#description(rows="3" name="description")
+        .form-actions  
+          %button.btn.btn-primary(type="submit") Save
 
-  .row
-    %form(action="/description" method="post")
-      %fieldset
-        %legend Enter some text
-        .clearfix
-          %label(for="description") Description
-          .input
-            %textarea.xxlarge#description(rows="3" name="description")
-          .actions
-            %input.btn.primary(type="submit" value="Save")            
+%iframe(name="upload"   width="0" height="0" frameborder="0")
+%iframe(name="progress" width="0" height="0" frameborder="0")
+

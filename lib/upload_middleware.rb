@@ -1,3 +1,5 @@
+require "json"
+
 class UploadMiddleware
   @@pipes_hash  ||= {}
   @@pipes_mutex ||= Mutex.new
@@ -16,20 +18,25 @@ class UploadMiddleware
     pipes_for(upload_id)[1]
   end
 
+  def self.forget_pipes_for(upload_id)
+    @@pipes_mutex.synchronize do
+      @@pipes_hash.delete(upload_id)
+    end
+  end
+
   def initialize(app)
     @app = app
   end
 
   def call(env)
-    env["rack.logger"].info("MIDDLEWARE call")
-    if env["PATH_INFO"] =~ %r(^/upload)
-      env["rack.logger"].info("MIDDLEWARE in /upload")
+    if env["PATH_INFO"] == "/upload"
       @env    = env
       @pos    = 0
       @length = env["CONTENT_LENGTH"]
       @length = @length.to_i if @length
 
-      @pipe = UploadMiddleware.pipe_writer_for(env["QUERY_STRING"])
+      @upload_id = env["QUERY_STRING"]
+      @pipe = UploadMiddleware.pipe_writer_for(@upload_id)
 
       @input, env["rack.input"] = env["rack.input"], self
     end
@@ -43,13 +50,13 @@ class UploadMiddleware
 
   def gets
     @input.gets.tap do |retval|
-      _inc(retval.size) if retval
+      _chunk_received(retval.size) if retval
     end
   end
 
   def read(*args)
     @input.read(*args).tap do |retval|
-      _inc(retval.size) if retval
+      _chunk_received(retval.size) if retval
     end
   end
 
@@ -59,9 +66,13 @@ class UploadMiddleware
     end
   end
 
-  def _inc(size)
+  def _chunk_received(size)
+    return if size == 0
     @pos += size
     @pipe.puts JSON.dump([@pos, @length])
-    @pipe.close if @pos == @length
+    if @pos == @length
+      @pipe.close
+      UploadMiddleware.forget_pipes_for(@upload_id)
+    end
   end
 end

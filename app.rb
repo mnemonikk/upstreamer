@@ -4,15 +4,13 @@ require "json"
 
 require "./lib/upload"
 require "./lib/upload_middleware"
-use UploadMiddleware
-
 
 get "/" do
   haml :index, {}, {:upload_id => Upload.generate_id}
 end
 
 post "/upload" do
-  upload = Upload.new(request.query_string, params["fileInput"])
+  upload = Upload.new(request.query_string, params["file"])
   upload.save!
 
   haml :upload, {}, {:upload => upload}
@@ -26,7 +24,6 @@ get "/progress" do
     out << header
 
     pipe = UploadMiddleware.pipe_reader_for(upload_id)
-
     while !pipe.eof?
       pos, length = JSON.parse(pipe.gets)
       out << "<script type=\"text/javascript\">parent.upload.progress(#{pos}, #{length});</script>\n"
@@ -35,4 +32,8 @@ get "/progress" do
 
     out << footer
   end
+end
+
+post "/submit" do
+  haml :submit, {}, params
 end
