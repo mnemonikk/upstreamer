@@ -3,6 +3,7 @@ source :rubygems
 gem "rainbows"
 gem "sinatra"
 gem "haml"
+gem "foreman"
 
 group :test do
   gem "mocha"
