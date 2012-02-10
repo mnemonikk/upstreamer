@@ -8,5 +8,5 @@ Rainbows! do
 end
 
 worker_processes 2
-stderr_path "log/error.log"
-stdout_path "log/output.log"
+# stderr_path "log/error.log"
+# stdout_path "log/output.log"
