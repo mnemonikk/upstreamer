@@ -10,7 +10,7 @@ get "/" do
 end
 
 post "/upload" do
-  upload = Upload.new(request.query_string, params["file"])
+  upload = Upload.new(params[:upload_id], params[:file])
   upload.save!
 
   haml :upload, {}, {:upload => upload}
@@ -19,7 +19,7 @@ end
 get "/progress" do
   stream do |out|
     header, footer = haml(:empty).split("<!-- CONTENT -->")
-    upload_id = request.query_string
+    upload_id = params[:upload_id]
 
     out << header
 

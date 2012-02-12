@@ -36,7 +36,7 @@ var upload = (function() {
       started = true;
       $("#file").hide();
       $(".progress-bar").show();
-      $("iframe[name=progress]").attr("src", "/progress?" + encodeURIComponent(upload_id));
+      $("iframe[name=progress]").attr("src", "/progress?upload_id=" + encodeURIComponent(upload_id));
     },
     
     progress: function(pos, length) {

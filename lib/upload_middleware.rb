@@ -35,7 +35,7 @@ class UploadMiddleware
       @length = env["CONTENT_LENGTH"]
       @length = @length.to_i if @length
 
-      @upload_id = env["QUERY_STRING"]
+      @upload_id = CGI.parse(env["QUERY_STRING"])["upload_id"].first
       @pipe = UploadMiddleware.pipe_writer_for(@upload_id)
 
       @input, env["rack.input"] = env["rack.input"], self

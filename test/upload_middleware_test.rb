@@ -13,7 +13,7 @@ class UploadMiddlewareTest < Test::Unit::TestCase
     env =
       {"PATH_INFO"      => "/upload",
        "rack.input"     => data_input,
-       "QUERY_STRING"   => upload_id,
+       "QUERY_STRING"   => "upload_id=#{upload_id}",
        "CONTENT_LENGTH" => data.size }
 
     app = mock()

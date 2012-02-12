@@ -28,7 +28,7 @@ class AppTest < Test::Unit::TestCase
     end
     writer.close
 
-    get "/progress?#{upload_id}"
+    get "/progress?upload_id=#{upload_id}"
 
     positions.each do |pos|
       assert last_response.body.include?(
