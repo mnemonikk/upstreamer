@@ -1,4 +1,5 @@
 require "json"
+require "cgi"
 
 class UploadMiddleware
   @@pipes_hash  ||= {}
@@ -68,11 +69,16 @@ class UploadMiddleware
 
   def _chunk_received(size)
     return if size == 0
+    return if @pipe.closed?
     @pos += size
     @pipe.puts JSON.dump([@pos, @length])
-    if @pos == @length
-      @pipe.close
-      UploadMiddleware.forget_pipes_for(@upload_id)
-    end
+    _cleanup if @pos >= @length
+  rescue Errno::EPIPE
+    _cleanup
+  end
+
+  def _cleanup
+    @pipe.close
+    UploadMiddleware.forget_pipes_for(@upload_id)
   end
 end
