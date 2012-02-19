@@ -18,7 +18,8 @@ end
 
 get "/progress" do
   stream do |out|
-    header, footer = haml(:empty).split("<!-- CONTENT -->")
+    marker = "<!-- CONTENT -->"
+    header, footer = haml(marker).split(marker)
     upload_id = params[:upload_id]
 
     out << header
