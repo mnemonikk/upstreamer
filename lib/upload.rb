@@ -5,10 +5,10 @@ class Upload
     "%0#{128/4}x" % Kernel.rand(2**128 - 1)
   end
 
-  def initialize(upload_id, param)
+  def initialize(upload_id, params)
     @id                = upload_id
-    @original_filename = param[:filename]
-    @tempfile          = param[:tempfile]
+    @original_filename = params[:filename]
+    @tempfile          = params[:tempfile]
     @filename          =
       @id.gsub(/[^0-9a-f]/, "") +
       File.extname(@original_filename)
