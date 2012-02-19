@@ -9,6 +9,7 @@
   -moz-box-shadow: 0 1px 5px #ccc inset, 0 1px 0 #eee;
   -webkit-box-shadow: 0 1px 5px #ccc inset, 0 1px 0 #eee;
   box-shadow: 0 1px 5px #ccc inset, 0 1px 0 #eee;
+  background: #fff;
 }
 
 .progress-bar span {
