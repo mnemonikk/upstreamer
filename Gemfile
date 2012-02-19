@@ -10,4 +10,5 @@ group :test do
   gem "rack-test"
   gem "capybara"
   gem "capybara-webkit"
+  gem "timecop"
 end

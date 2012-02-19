@@ -1,6 +1,7 @@
 require "test/unit"
 require "capybara"
 require "capybara/dsl"
+require "rack"
 
 Capybara.app = Rack::Builder.app do
   require File.expand_path(File.dirname(__FILE__)) + "/../app.rb"
