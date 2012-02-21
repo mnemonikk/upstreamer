@@ -12,7 +12,7 @@ var upload = (function() {
       return false;
     }
     return true;
-  }
+  };
 
   $(function() {
     // automatically submit the upload form when a file is selected
@@ -31,21 +31,21 @@ var upload = (function() {
     init: function(options) {
       upload_id = options.upload_id;
     },
-    
+
     start: function() {
       started = true;
       $("#file").hide();
       $(".progress-bar").show();
       $("iframe[name=progress]").attr("src", "/progress?upload_id=" + encodeURIComponent(upload_id));
     },
-    
+
     progress: function(pos, length) {
       $(".progress-bar span").css("width", parseInt(pos / length * 100) + "%");
     },
-    
+
     finish: function(filename, url) {
       finished = true;
-      var link = $("<a></a>").attr("href", url).text(filename)
+      var link = $("<a></a>").attr("href", url).text(filename);
       $("#success").html("Here's your file ").append(link).show();
       $(".progress-bar").removeClass("animated");
       $("form .control-group").first().addClass("success");
